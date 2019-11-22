@@ -146,7 +146,7 @@ class ClassificationMeasurements(object):
     def get_incorrectly_classified_ratio(self):
         return 1.0 - self.get_accuracy()
 
-    def _get_target_index(self, target, add_label=False):
+    def _get_target_index(self, target, add_label=True):
         """ Computes the index of an element in the self.targets list.
         Also reshapes the ConfusionMatrix and adds new found targets
         if add is True.
@@ -514,7 +514,7 @@ class WindowClassificationMeasurements(object):
     def get_incorrectly_classified_ratio(self):
         return 1.0 - self.get_accuracy()
 
-    def _get_target_index(self, target, add=False):
+    def _get_target_index(self, target, add_label=True):
         """ Computes the index of an element in the self.targets list.
         Also reshapes the ConfusionMatrix and adds new found targets
         if add is True.
@@ -524,7 +524,7 @@ class WindowClassificationMeasurements(object):
         target: int
             A class label.
 
-        add: bool
+        add_label: bool
             Either to add new found labels to the targets list or not.
 
         Returns
@@ -533,16 +533,16 @@ class WindowClassificationMeasurements(object):
             The target index in the self.targets list.
 
         """
-        if (self.targets is None) and add:
+        if (self.targets is None) and add_label:
             self.targets = []
             self.targets.append(target)
             self.n_targets = len(self.targets)
             if self.n_targets > 2:
                 # The default matrix is for the binary case, extend it if necessary
                 self.confusion_matrix.reshape(self.n_targets, self.n_targets)
-        elif (self.targets is None) and (not add):
+        elif (self.targets is None) and (not add_label):
             return None
-        if target not in self.targets and add:
+        if target not in self.targets and add_label:
             self.targets.append(target)
             self.n_targets = len(self.targets)
             if self.confusion_matrix.shape()[0] < self.n_targets:
